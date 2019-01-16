@@ -1,0 +1,27 @@
+{
+  "name": "node-server",
+  "version": "1.0.0",
+  "description": "node-server-api",
+  "author": "tolking <qw13131wang@gmail.com>",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node dist/index.js",
+    "serve": "node dist/index.js",
+    "build": "npm run tslint && npm run build-ts",
+    "build-ts": "tsc",
+    "watch": "npm run tslint && npm run watch-ts",
+    "watch-ts": "tsc -w",
+    "tslint": "tslint -c tslint.json -p tsconfig.json"
+  },
+  "dependencies": {
+    "koa": "^2.6.2",
+    "koa-bodyparser": "^3.2.0",
+    "koa-router": "^7.4.0"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.0.48",
+    "@types/koa-router": "^7.0.37",
+    "tslint": "^5.12.1",
+    "typescript": "^3.2.2"
+  }
+}
