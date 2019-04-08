@@ -16,7 +16,8 @@
   "dependencies": {
     "koa": "^2.6.2",
     "koa-bodyparser": "^3.2.0",
-    "koa-router": "^7.4.0"
+    "koa-router": "^7.4.0",
+    "mysqls": "^1.0.8"
   },
   "devDependencies": {
     "@types/koa": "^2.0.48",
