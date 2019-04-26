@@ -5,7 +5,15 @@ const app = new koa()
 app
   .use(async (ctx: any, next: any) => {
     console.log(`Process ${ctx.request.method} ${ctx.request.url}...`)
-    await next()
+    try {
+      await next()
+    } catch (err) {
+      // will only respond with JSON
+      ctx.status = err.statusCode || err.status || 500;
+      ctx.body = {
+        message: err.message
+      }
+    }
   })
   .use(router.routes())
   .use(router.allowedMethods())

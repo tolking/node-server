@@ -6,16 +6,24 @@
 
 ``` bash
 # install dependencies
+$ yarn install
+# or
 $ npm install
 
 # 实施编译 ts
+$ yarn run watch
+# or
 $ npm run watch
 
 # serve with hot reload at localhost:8000
-$ npm run dev
+$ yarn run dev
+($ yarn run serve)
 # or
-$ npm run serve
+$ npm run dev
+($ npm run serve)
 
 # build for production
+$ yarn run build
+# or
 $ npm run build
 ```
