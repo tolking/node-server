@@ -23,8 +23,9 @@
   "devDependencies": {
     "@types/koa": "^2.0.48",
     "@types/koa-router": "^7.0.37",
-    "@types/bluebird": "^3.5.26",
     "@types/validator": "^10.11.0",
+    "@types/bluebird": "^3.5.26",
+    "@types/koa-bodyparser": "^4.2.2",
     "tslint": "^5.12.1",
     "typescript": "^3.2.2"
   }
