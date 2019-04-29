@@ -2,33 +2,86 @@ import { Context } from 'koa'
 import { UserModel } from '../models'
 
 export default class UserController {
-  // 查找所有
-  public static async findAll(ctx: Context) {
-    const includes: includes = {
-      where: {
-        name: 'admin'
-      }
-    }
-    const data: any[] = await UserModel.findAll(includes)
-    ctx.body = data
-  }
   // 登陆
-  public static async login(ctx: Context) {
-    const { name, password }: userInfo = ctx.request.body
+  public static async signIn (ctx: Context) {
+    const { username, password }: userInfo = ctx.request.body
     const includes: includes = {
-      where: {
-        name,
-        password
-      }
+      where: { username, password }
     }
     const data: any[] = await UserModel.findAll(includes)
-
-    console.log(data)
 
     if (data.length) {
-      ctx.body = 'ok'
+      ctx.body = {
+        code: 0
+      }
     } else {
-      ctx.body = data
+      ctx.body = {
+        code: 1,
+        msg: '账户或密码不正确'
+      }
     }
   }
+  // 检查是否有重复用户名
+  public static async check (ctx: Context) {
+    const { username } = ctx.request.query
+
+    if (checkName(username)) {
+      ctx.body = {
+        code: 1,
+        msg: '已经有相同名称'
+      }
+    } else {
+      ctx.body = {
+        code: 0,
+        msg: '名称可以注册'
+      }
+    }
+  }
+  // 注册
+  public static async signUp (ctx: Context) {
+    const { username, password }: userInfo = ctx.request.body
+    const haveName = await checkName(username)
+
+    if (username && password) {
+      if (haveName) {
+        ctx.body = {
+          code: 1,
+          msg: '已经有相同名称'
+        }
+      } else {
+        const data: userInfo = { username, password }
+        const id: any = await UserModel.create(data)
+
+        if (id) {
+          ctx.body = {
+            code: 0,
+            msg: '注册成功'
+          }
+        } else {
+          ctx.body = {
+            code: 1,
+            msg: '注册失败'
+          }
+        }
+      }
+    } else {
+      ctx.body = {
+        code: 1,
+        msg: '账户或密码不能够为空'
+      }
+    }
+  }
+}
+
+/**
+ * 检查是否有重复用户名
+ * @param username
+ */
+async function checkName (username: string) {
+  const includes: includes = {
+    where: { username }
+  }
+  const data: any[] = await UserModel.findAll(includes)
+
+  return data.length
 }

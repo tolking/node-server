@@ -1,6 +1,7 @@
 import * as koa from 'koa'
 import * as bodyParser from 'koa-bodyparser'
 import router from './router'
+import { port } from './config'
 
 const app = new koa()
 
@@ -10,7 +11,7 @@ app
     try {
       await next()
     } catch (err) {
-      // will only respond with JSON
+      // 拦截错误
       ctx.status = err.statusCode || err.status || 500
       ctx.body = {
         message: err.message
@@ -20,6 +21,6 @@ app
   .use(bodyParser())
   .use(router.routes())
   .use(router.allowedMethods())
-  .listen(3000)
+  .listen(port)
 
-console.log('url: http://localhost:3000')
+console.log('url: http://localhost:' + port)

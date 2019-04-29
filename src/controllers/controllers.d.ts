@@ -1,12 +1,12 @@
 interface includes {
   where: {
     id?: number,
-    name?: string,
+    username?: string,
     password?: string
   }
 }
 
 interface userInfo {
-  name: string,
+  username: string,
   password: string
 }

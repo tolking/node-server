@@ -1,24 +1,24 @@
-import db from '../config/db'
+import { db } from '../config'
 import { Model, DataTypes } from 'sequelize'
 
 class User extends Model {
   public id!: number
-  public name!: string
+  public username!: string
   public password!: string
 }
 
 User.init({
   id: {
-    type: DataTypes.INTEGER,
+    type: new DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true
   },
-  name: {
-    type: DataTypes.STRING(128),
+  username: {
+    type: new DataTypes.STRING(128),
     allowNull: false
   },
   password: {
-    type: DataTypes.STRING(128),
+    type: new DataTypes.STRING(128),
     allowNull: false
   }
 }, {
