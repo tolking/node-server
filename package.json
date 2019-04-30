@@ -14,18 +14,20 @@
     "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
   "dependencies": {
+    "@types/md5": "^2.1.33",
     "koa": "^2.6.2",
     "koa-bodyparser": "^3.2.0",
     "koa-router": "^7.4.0",
+    "md5": "^2.2.1",
     "mysql2": "^1.6.4",
     "sequelize": "^5.7.6"
   },
   "devDependencies": {
+    "@types/bluebird": "^3.5.26",
     "@types/koa": "^2.0.48",
+    "@types/koa-bodyparser": "^4.2.2",
     "@types/koa-router": "^7.0.37",
     "@types/validator": "^10.11.0",
-    "@types/bluebird": "^3.5.26",
-    "@types/koa-bodyparser": "^4.2.2",
     "tslint": "^5.12.1",
     "typescript": "^3.2.2"
   }

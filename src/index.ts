@@ -14,7 +14,8 @@ app
       // 拦截错误
       ctx.status = err.statusCode || err.status || 500
       ctx.body = {
-        message: err.message
+        code: 1,
+        msg: err.message
       }
     }
   })
