@@ -5,6 +5,9 @@ import { exp, secret } from '../config'
 
 const jwt = require ('jsonwebtoken')
 
+/**
+ * 处理用户相关数据
+ */
 export default class UserController {
   // 登陆
   public static async signIn (ctx: Context) {

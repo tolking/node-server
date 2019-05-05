@@ -45,7 +45,7 @@ export default function verifyToken () {
  * @param url 当前路由
  * @param rule 排除规则
  */
-async function verifyRoute (url: string, rule: string[] | RegExp ) {
+async function verifyRoute (url: string, rule: string[] | RegExp) {
   if (Array.isArray(<string[]>rule)) {
     const route: string = url.split('?')[0]
     return (<string[]>rule).includes(route)

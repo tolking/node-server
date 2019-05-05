@@ -28,13 +28,14 @@ export const aliasToken: string = 'token'
 export const unless: string[] | RegExp = [
   '/api/user/signIn',
   '/api/user/check',
-  '/api/user/signUp'
+  '/api/user/signUp',
+  '/api/upload'
 ]
 
 /**
  * token 过期时间
  */
-export const exp: string | number = '1h'
+export const exp: string = '10d'
 
 /**
  * secretOrPrivateKey

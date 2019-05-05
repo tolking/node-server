@@ -9,6 +9,9 @@ const app = new koa()
 app
   // 请求信息
   .use(async (ctx: any, next: any) => {
+    ctx.set('Access-Control-Allow-Origin', '*')
+    ctx.set('Access-Control-Allow-Headers', 'X-Requested-With')
+    ctx.set('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS')
     console.log(`Process ${ctx.request.method} ${ctx.request.url}...`)
     await next()
   })

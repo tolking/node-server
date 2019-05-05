@@ -1,71 +1,68 @@
 import { Context } from 'koa'
-import * as fs from 'fs'
 import * as path from 'path'
+import * as fs from 'fs'
+import * as Busboy from 'busboy'
 
-export default (ctx: Context) => {
-  // 设置允许跨域的域名称
-  ctx.set('Access-Control-Allow-Origin', '*')
-  ctx.set('Access-Control-Allow-Headers', 'X-Requested-With')
-  ctx.set('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS')
-
-  // ----- 情况1：跨域时，先发送一个options请求，此处要返回200 -----
-  if (ctx.method === 'OPTIONS') {
-    console.log('options 请求时，返回 200')
-
-    // 返回结果
-    ctx.status = 200
-    ctx.body = 'options OK'
-    return
+/**
+ * 上传文件
+ */
+export default async (ctx: Context) => {
+  const url = await uploadFile(ctx)
+  ctx.body = {
+    msg: '上传成功',
+    data: { url }
   }
+}
 
-  // ----- 情况2：发送post请求，上传图片 -----
+/**
+ * 处理上传文件
+ */
+function uploadFile(ctx: Context) {
+  const busboy = new Busboy({ headers: ctx.req.headers })
+  const filePath = path.join(__dirname, '../static/upload')
 
-  // 处理 request
-  console.log('parse ok')
+  mkdirsSync(filePath)
 
-  // 文件将要上传到哪个文件夹下面
-  const uploadfolderpath = path.join(__dirname, '../uploads')
+  return new Promise((resolve, reject) => {
+    // 解析请求文件事件
+    busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
+      const fileName = Math.random().toString(16).substr(2) + '.' + getSuffixName(filename)
+      const _uploadFilePath = path.join(filePath, fileName)
+      const saveTo = path.join(_uploadFilePath)
+      // 文件保存到制定路径
+      file.pipe(fs.createWriteStream(saveTo))
+      // 文件写入事件结束
+      file.on('end', () => {
+        const url = `${ctx.origin}/static/upload/${fileName}`
+        resolve(url)
+      })
+    })
+    // 解析错误事件
+    busboy.on('error', (err: any) => {
+      reject(err)
+    })
+    ctx.req.pipe(busboy)
+  })
+}
 
-  const files = ctx.request.body.files
-
-  // formidable 会将上传的文件存储为一个临时文件，现在获取这个文件的目录
-  const tempfilepath = files.file.path
-  // 获取文件类型
-  const type = files.file.type
-
-  // 获取文件名，并根据文件名获取扩展名
-  let filename = files.file.name
-  let extname = filename.lastIndexOf('.') >= 0 ? filename.slice(filename.lastIndexOf('.') - filename.length) : ''
-  // 文件名没有扩展名时候，则从文件类型中取扩展名
-  if (extname === '' && type.indexOf('/') >= 0) {
-    extname = '.' + type.split('/')[1]
-  }
-  // 将文件名重新赋值为一个随机数（避免文件重名）
-  filename = Math.random().toString().slice(2) + extname
-
-  // 构建将要存储的文件的路径
-  const filenewpath = path.join(uploadfolderpath, filename)
-
-  let result = ''
-
-  // 将临时文件保存为正式的文件
-  try {
-    fs.renameSync(tempfilepath, filenewpath)
-  } catch (err) {
-    if (err) {
-      // 发生错误
-      console.log('fs.rename err')
-      result = 'error|save error'
+/**
+ * 同步创建文件目录
+ */
+function mkdirsSync(dirname: any) {
+  if (fs.existsSync(dirname)) {
+    return true
+  } else {
+    if (mkdirsSync(path.dirname(dirname)) ) {
+      fs.mkdirSync(dirname)
+      return true
     }
   }
-  // 保存成功
-  console.log('fs.rename done')
-  // 拼接url地址
-  result = '/uploads' + filename
+}
 
-  // 返回结果
-  ctx.body = {
-    code: 0,
-    data: result
-  }
+/**
+ * 获取上传文件的后缀名
+ */
+function getSuffixName(fileName: any) {
+  const nameList: any = fileName.split('.')
+  return nameList[nameList.length - 1]
 }

@@ -14,6 +14,7 @@
     "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
   "dependencies": {
+    "busboy": "^0.3.1",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.6.2",
     "koa-bodyparser": "^3.2.0",
@@ -23,13 +24,14 @@
     "sequelize": "^5.7.6"
   },
   "devDependencies": {
+    "@types/busboy": "^0.2.3",
     "@types/bluebird": "^3.5.26",
+    "@types/jsonwebtoken": "^8.3.2",
     "@types/koa": "^2.0.48",
     "@types/koa-bodyparser": "^4.2.2",
     "@types/koa-router": "^7.0.37",
-    "@types/validator": "^10.11.0",
-    "@types/jsonwebtoken": "^8.3.2",
     "@types/md5": "^2.1.33",
+    "@types/validator": "^10.11.0",
     "tslint": "^5.12.1",
     "typescript": "^3.2.2"
   }
