@@ -1,6 +1,9 @@
 import { Context } from 'koa'
 import * as md5 from 'md5'
 import { UserModel } from '../models'
+import { exp, secret } from '../config'
+
+const jwt = require ('jsonwebtoken')
 
 export default class UserController {
   // 登陆
@@ -12,8 +15,11 @@ export default class UserController {
     const data: UserModel[] = await UserModel.findAll(includes)
 
     if (data.length) {
+      const token: string = await jwt.sign({ username, password }, secret, { expiresIn: exp })
+
       ctx.body = {
-        code: 0 // TODO: add token `jsonwebtoken`
+        code: 0,
+        token
       }
     } else {
       ctx.body = {
@@ -25,7 +31,7 @@ export default class UserController {
   // 检查是否有重复用户名
   public static async check (ctx: Context) {
     const { username } = ctx.request.query
-    const haveName = await checkName(username)
+    const haveName: number = await checkName(username)
 
     if (haveName) {
       ctx.body = {
