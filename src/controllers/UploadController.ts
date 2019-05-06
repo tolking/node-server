@@ -2,16 +2,14 @@ import { Context } from 'koa'
 import * as path from 'path'
 import * as fs from 'fs'
 import * as Busboy from 'busboy'
+import * as moment from 'moment'
 
 /**
  * 上传文件
  */
 export default async (ctx: Context) => {
   const url = await uploadFile(ctx)
-  ctx.body = {
-    msg: '上传成功',
-    data: { url }
-  }
+  ctx.send.success(url, '上传成功')
 }
 
 /**
@@ -19,7 +17,8 @@ export default async (ctx: Context) => {
  */
 function uploadFile(ctx: Context) {
   const busboy = new Busboy({ headers: ctx.req.headers })
-  const filePath = path.join(__dirname, '../static/upload')
+  const datePath: string = moment().format('YYYYMMDD')
+  const filePath: string = path.join(__dirname, '../static/upload/' + datePath)
 
   mkdirsSync(filePath)
 
@@ -33,7 +32,7 @@ function uploadFile(ctx: Context) {
       file.pipe(fs.createWriteStream(saveTo))
       // 文件写入事件结束
       file.on('end', () => {
-        const url = `${ctx.origin}/static/upload/${fileName}`
+        const url = `${ctx.origin}/upload/${datePath}/${fileName}`
         resolve(url)
       })
     })
@@ -48,7 +47,7 @@ function uploadFile(ctx: Context) {
 /**
  * 同步创建文件目录
  */
-function mkdirsSync(dirname: any) {
+function mkdirsSync (dirname: any): boolean {
   if (fs.existsSync(dirname)) {
     return true
   } else {
@@ -62,7 +61,7 @@ function mkdirsSync(dirname: any) {
 /**
  * 获取上传文件的后缀名
  */
-function getSuffixName(fileName: any) {
+function getSuffixName (fileName: any): string {
   const nameList: any = fileName.split('.')
   return nameList[nameList.length - 1]
 }

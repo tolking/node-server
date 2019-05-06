@@ -1,15 +1,15 @@
+import { Context } from 'koa'
+import * as jwt from 'jsonwebtoken'
 import { aliasToken, secret, unless } from '../config'
-
-const jwt = require ('jsonwebtoken')
 
 /**
  * 验证 token 状态
  */
-export default function verifyToken () {
-  return async (ctx: any, next: any) => {
+export default () => {
+  return async (ctx: Context, next: Function) => {
     const verify: boolean = await verifyRoute(ctx.request.url, unless)
 
-    if (!verify) {
+    if (verify) {
       // 获取 token值
       const accessToken: string = ctx.request.header[aliasToken]
         ? ctx.request.header[aliasToken]
@@ -17,22 +17,16 @@ export default function verifyToken () {
 
       if (accessToken) {
         try {
-          const { username } = await jwt.verify(accessToken, secret)
-          ctx.username = username
+          const data: object | string = await jwt.verify(accessToken, secret)
+          if (typeof <object>data === 'object') {
+            ctx.token = <VerifyData>data
+          }
           await next()
         } catch (error) {
-          ctx.status = 403
-          ctx.body = {
-            code: 4,
-            msg: '登陆信息已经过期'
-          }
+          ctx.send.warn('登陆信息已经过期')
         }
       } else {
-        ctx.status = 401
-        ctx.body = {
-          code: 3,
-          msg: '没有权限访问'
-        }
+        ctx.send.warn('没有权限访问')
       }
     } else {
       await next()
@@ -46,10 +40,15 @@ export default function verifyToken () {
  * @param rule 排除规则
  */
 async function verifyRoute (url: string, rule: string[] | RegExp) {
-  if (Array.isArray(<string[]>rule)) {
-    const route: string = url.split('?')[0]
-    return (<string[]>rule).includes(route)
+  // 仅验证以 `/api/` 开头的路由
+  if (url.startsWith('/api/')) {
+    if (Array.isArray(<string[]>rule)) {
+      const route: string = url.split('?')[0]
+      return !(<string[]>rule).includes(route)
+    } else {
+      return !(<RegExp>rule).test(url)
+    }
   } else {
-    return (<RegExp>rule).test(url)
+    return false
   }
 }

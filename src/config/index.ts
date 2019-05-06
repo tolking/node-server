@@ -11,11 +11,26 @@ export const port: number = 3000
  * 数据库账户
  * 数据库密码
  */
-export const db: Sequelize = new Sequelize('test', 'root', '123456', {
+export const db: Sequelize = new Sequelize({
+  database: 'test',
+  username: 'root',
+  password: '123456',
   host: 'localhost',
-  dialect: 'mysql',
-  timezone: '+08:00'
+  port: 3306,
+  dialect: 'mysql', // One of mysql, postgres, sqlite, mariadb and mssql
+  timezone: '+08:00',
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  }
 })
+
+/**
+ * 静态资源目录路径
+ */
+export const staticPath = './static'
 
 /**
  * token 别名
@@ -23,6 +38,7 @@ export const db: Sequelize = new Sequelize('test', 'root', '123456', {
 export const aliasToken: string = 'token'
 
 /**
+ * 仅验证以 `/api/` 开头的路由
  * 无需验证 token 的路由(数组或正则)
  */
 export const unless: string[] | RegExp = [

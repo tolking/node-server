@@ -1,14 +1,16 @@
 import * as koa from 'koa'
 import * as bodyParser from 'koa-bodyparser'
+import * as serve from 'koa-static'
+import * as path from 'path'
 import router from './router'
-import { errorHandle, verifyToken } from './middlewares'
-import { port } from './config'
+import { port, staticPath } from './config'
+import { common, errorHandle, verifyToken } from './middlewares'
 
 const app = new koa()
 
 app
   // 请求信息
-  .use(async (ctx: any, next: any) => {
+  .use(async (ctx: koa.Context, next: Function) => {
     ctx.set('Access-Control-Allow-Origin', '*')
     ctx.set('Access-Control-Allow-Headers', 'X-Requested-With')
     ctx.set('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS')
@@ -16,11 +18,19 @@ app
     await next()
   })
 
-  // 拦截错误
-  .use(errorHandle())
+  // 配置静态资源目录
+  .use(serve(
+    path.join( __dirname, staticPath)
+  ))
+
+  // 配置公共方法
+  .use(common())
 
   // 验证 token 状态
   .use(verifyToken())
+
+  // 拦截错误
+  .use(errorHandle())
 
   // 解析 post 请求
   .use(bodyParser())
