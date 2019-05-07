@@ -1,6 +1,6 @@
 # node 后台测试 demo
 
-> 技术栈 nodejs koa2 koa-router typescript ...
+> 技术栈 nodejs koa2 koa-router typescript sequelize ...
 
 试写后端接口
 
@@ -15,7 +15,7 @@ $ yarn run watch
 # or
 $ npm run watch
 
-# serve with hot reload at localhost:8000
+# serve with hot reload at localhost:3000
 $ yarn run dev
 ($ yarn run serve)
 # or

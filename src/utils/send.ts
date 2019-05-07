@@ -6,7 +6,6 @@ export default class Send {
 
   constructor (ctx: any) {
     this.ctx = ctx
-    this.ctx.status = 200
     this.ctx.set('Content-Type', 'application/json')
   }
 

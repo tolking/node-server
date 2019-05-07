@@ -4,7 +4,7 @@ import * as serve from 'koa-static'
 import * as path from 'path'
 import router from './router'
 import { port, staticPath } from './config'
-import { common, errorHandle, verifyToken } from './middlewares'
+import { common, errorHandle } from './middlewares'
 
 const app = new koa()
 
@@ -25,9 +25,6 @@ app
 
   // 配置公共方法
   .use(common())
-
-  // 验证 token 状态
-  .use(verifyToken())
 
   // 拦截错误
   .use(errorHandle())

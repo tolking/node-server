@@ -27,7 +27,7 @@ User.init({
   sequelize: db
 })
 
-// 创建 user 表
+// 创建 user 表(初次建表是使用)
 // User.sync({ force: true })
 
 export default User

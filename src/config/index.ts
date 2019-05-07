@@ -7,17 +7,17 @@ export const port: number = 3000
 
 /**
  * 配置数据库
- * 数据库名字
- * 数据库账户
- * 数据库密码
+ * @param username 数据库账户
+ * @param password 数据库密码
+ * @param database 数据库名字
  */
 export const db: Sequelize = new Sequelize({
-  database: 'test',
-  username: 'root',
-  password: '123456',
+  dialect: 'mysql', // One of mysql, postgres, sqlite, mariadb and mssql
   host: 'localhost',
   port: 3306,
-  dialect: 'mysql', // One of mysql, postgres, sqlite, mariadb and mssql
+  username: 'root',
+  password: '123456',
+  database: 'test',
   timezone: '+08:00',
   pool: {
     max: 5,
@@ -38,7 +38,8 @@ export const staticPath = './static'
 export const aliasToken: string = 'token'
 
 /**
- * 仅验证以 `/api/` 开头的路由
+ * 默认仅验证以 `/api/` 开头的路由
+ * 如果需要验证所有路由将中间件 `verifyToken` 从 router 移至 index.ts 中
  * 无需验证 token 的路由(数组或正则)
  */
 export const unless: string[] | RegExp = [

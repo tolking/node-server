@@ -1,4 +1,5 @@
 import * as KoaRouter from 'koa-router'
+import { verifyToken } from '../middlewares'
 import {
   UserController,
   UploadController
@@ -9,6 +10,9 @@ const router = new KoaRouter({
 })
 
 router
+  // 验证 token 状态
+  .use(verifyToken())
+
   // 用户相关
   .post('user/signIn', UserController.signIn)
   .get('user/check', UserController.check)

@@ -40,15 +40,10 @@ export default () => {
  * @param rule 排除规则
  */
 async function verifyRoute (url: string, rule: string[] | RegExp) {
-  // 仅验证以 `/api/` 开头的路由
-  if (url.startsWith('/api/')) {
-    if (Array.isArray(<string[]>rule)) {
-      const route: string = url.split('?')[0]
-      return !(<string[]>rule).includes(route)
-    } else {
-      return !(<RegExp>rule).test(url)
-    }
+  if (Array.isArray(<string[]>rule)) {
+    const route: string = url.split('?')[0]
+    return !(<string[]>rule).includes(route)
   } else {
-    return false
+    return !(<RegExp>rule).test(url)
   }
 }

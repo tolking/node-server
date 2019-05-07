@@ -10,6 +10,7 @@ export default () => {
     } catch (err) {
       console.log(err)
       const msg: any = err.originalError ? err.originalError.message : err.message
+      // ctx.status = err.statusCode || err.status || 500
       ctx.send.error(msg)
     }
   }
