@@ -18,7 +18,7 @@ export default class UserController {
     const data: UserModel[] = await UserModel.findAll(find)
 
     if (data.length) {
-      const token: string = await jwt.sign({ username, password }, secret, { expiresIn: exp })
+      const token: string = await jwt.sign({ username }, secret, { expiresIn: exp })
       ctx.send.success(token)
     } else {
       ctx.send.warn('账户或密码不正确')
