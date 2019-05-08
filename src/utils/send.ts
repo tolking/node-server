@@ -10,6 +10,13 @@ export default class Send {
   }
 
   /**
+   * 配置返回的 status
+   * @param code 状态码
+   */
+  public status (code: number) {
+    this.ctx.status = code
+  }
+  /**
    * 返回数据
    * @param config 数据内容
    */

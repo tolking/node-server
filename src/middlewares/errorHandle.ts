@@ -9,8 +9,10 @@ export default () => {
       await next()
     } catch (err) {
       console.log(err)
+      const status: number = err.statusCode || err.status || 500
       const msg: any = err.originalError ? err.originalError.message : err.message
-      // ctx.status = err.statusCode || err.status || 500
+
+      ctx.send.status(status)
       ctx.send.error(msg)
     }
   }

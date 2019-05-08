@@ -1,4 +1,5 @@
 import * as koa from 'koa'
+import { Context } from 'koa'
 import * as bodyParser from 'koa-bodyparser'
 import * as serve from 'koa-static'
 import * as path from 'path'
@@ -10,7 +11,7 @@ const app = new koa()
 
 app
   // 请求信息
-  .use(async (ctx: koa.Context, next: Function) => {
+  .use(async (ctx: Context, next: Function) => {
     ctx.set('Access-Control-Allow-Origin', '*')
     ctx.set('Access-Control-Allow-Headers', 'X-Requested-With')
     ctx.set('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS')

@@ -112,7 +112,7 @@ export default class UserController {
 
 /**
  * 检查用户名是否有存在
- * @param username
+ * @param username 用户名
  */
 async function checkName (username: string) {
   const find: FindOptions = {

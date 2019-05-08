@@ -25,14 +25,13 @@ function uploadFile(ctx: Context) {
   return new Promise((resolve, reject) => {
     // 解析请求文件事件
     busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-      const fileName = Math.random().toString(16).substr(2) + '.' + getSuffixName(filename)
-      const _uploadFilePath = path.join(filePath, fileName)
-      const saveTo = path.join(_uploadFilePath)
+      const fileName: string = Math.random().toString(16).substr(2) + '.' + getSuffixName(filename)
+      const saveTo: string = path.join(filePath, fileName)
       // 文件保存到制定路径
       file.pipe(fs.createWriteStream(saveTo))
       // 文件写入事件结束
       file.on('end', () => {
-        const url = `${ctx.origin}/upload/${datePath}/${fileName}`
+        const url: string = `${ctx.origin}/upload/${datePath}/${fileName}`
         resolve(url)
       })
     })
