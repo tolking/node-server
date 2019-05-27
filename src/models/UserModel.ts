@@ -1,4 +1,4 @@
-import { db } from '../config'
+import { sequelize } from '../config'
 import { Model, DataTypes } from 'sequelize'
 
 class User extends Model {
@@ -22,9 +22,10 @@ User.init({
     allowNull: false
   }
 }, {
+  underscored: true,
   tableName: 'users',
   modelName: 'user',
-  sequelize: db
+  sequelize
 })
 
 // 创建 user 表(初次建表是使用)

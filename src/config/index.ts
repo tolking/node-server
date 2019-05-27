@@ -14,7 +14,7 @@ export const port: number = 3000
  * @param password 数据库密码
  * @param database 数据库名字
  */
-export const db: Sequelize = new Sequelize({
+export const sequelize: Sequelize = new Sequelize({
   dialect: 'mysql',
   host: 'localhost',
   port: 3306,
@@ -48,8 +48,7 @@ export const aliasToken: string = 'token'
 export const unless: string[] | RegExp = [
   '/api/user/signIn',
   '/api/user/check',
-  '/api/user/signUp',
-  '/api/upload'
+  '/api/user/signUp'
 ]
 
 /**
