@@ -24,7 +24,6 @@ User.init({
 }, {
   underscored: true,
   tableName: 'users',
-  modelName: 'user',
   sequelize
 })
 

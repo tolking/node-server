@@ -1,9 +1,14 @@
 import { Context } from 'koa'
 import * as md5 from 'md5'
 import * as jwt from 'jsonwebtoken'
-import { FindOptions, UpdateOptions } from 'sequelize'
 import { UserModel } from '../models'
 import { exp, secret } from '../config'
+import { checkValue } from '../utils'
+import {
+  FindOptions,
+  FindOrCreateOptions,
+  UpdateOptions
+} from 'sequelize'
 
 /**
  * 处理用户相关数据
@@ -12,13 +17,23 @@ export default class UserController {
   // 登陆
   public static async signIn (ctx: Context) {
     const { username, password }: userInfo = ctx.request.body
+    const err = await checkValue({
+      username,
+      password
+    })
+
+    if (err) {
+      ctx.send.warn(err)
+      return
+    }
+
     const find: FindOptions = {
       where: { username, password: md5(password) }
     }
-    const data: UserModel[] = await UserModel.findAll(find)
+    const data: UserModel = await UserModel.findOne(find)
 
-    if (data.length) {
-      const token: string = await jwt.sign({ username }, secret, { expiresIn: exp })
+    if (data) {
+      const token: string = await jwt.sign({ id: data.id, username }, secret, { expiresIn: exp })
       ctx.send.success(token)
     } else {
       ctx.send.warn('账户或密码不正确')
@@ -27,7 +42,16 @@ export default class UserController {
   // 检查是否有重复用户名
   public static async check (ctx: Context) {
     const { username } = ctx.request.query
-    const haveName: number = await checkName(username)
+    const err = await checkValue({
+      username
+    })
+
+    if (err) {
+      ctx.send.warn(err)
+      return
+    }
+
+    const haveName = await checkName(username)
 
     if (haveName) {
       ctx.send.warn('已经有相同名称')
@@ -38,37 +62,54 @@ export default class UserController {
   // 注册
   public static async signUp (ctx: Context) {
     const { username, password }: userInfo = ctx.request.body
+    const err = await checkValue({
+      username,
+      password
+    })
 
-    if (username && password) {
-      const haveName: number = await checkName(username)
+    if (err) {
+      ctx.send.warn(err)
+      return
+    }
 
-      if (haveName) {
-        ctx.send.warn('已经有相同名称')
+    const find: FindOrCreateOptions = {
+      where: { username },
+      defaults: { password: md5(password) }
+    }
+    const [data, state]: [UserModel, boolean] = await UserModel.findOrCreate(find)
+
+    if (state) {
+      if (data) {
+        ctx.send.success('', '注册成功')
       } else {
-        const item: userInfo = { username, password: md5(password) }
-        const id: UserModel = await UserModel.create(item)
-
-        if (id) {
-          ctx.send.success('', '注册成功')
-        } else {
-          ctx.send.error('注册失败')
-        }
+        ctx.send.error('注册失败')
       }
     } else {
-      ctx.send.warn('账户和密码不能够为空')
+      ctx.send.warn('已经有相同用户名')
     }
   }
   // 修改密码
   public static async change (ctx: Context) {
     const id: number = ctx.params.id
     const { oldPassword, newPassword }: changePassword = ctx.request.body
+    const err = await checkValue({
+      id,
+      oldPassword,
+      newPassword
+    })
+
+    if (err) {
+      ctx.send.warn(err)
+      return
+    }
+
     const find: FindOptions = {
       where: { id, password: md5(oldPassword) }
     }
     // 检查用户是否存在
-    const haveItem: UserModel[] = await UserModel.findAll(find)
+    const haveItem: UserModel = await UserModel.findOne(find)
 
-    if (haveItem.length) {
+    if (haveItem) {
       const item: { password: string } = { password: md5(newPassword) }
       const find: UpdateOptions = {
         where: { id }
@@ -80,9 +121,6 @@ export default class UserController {
       } else {
         ctx.send.error('修改失败')
       }
-      ctx.body = {
-        data
-      }
     } else {
       ctx.send.warn('原密码输入错误')
     }
@@ -90,13 +128,22 @@ export default class UserController {
   // 注销用户
   public static async del (ctx: Context) {
     const id: number = ctx.params.id
+    const err = await checkValue({
+      id
+    })
+
+    if (err) {
+      ctx.send.warn(err)
+      return
+    }
+
     const find: FindOptions = {
       where: { id }
     }
     // 检查用户是否存在
-    const haveItem: UserModel[] = await UserModel.findAll(find)
+    const haveItem: UserModel = await UserModel.findOne(find)
 
-    if (haveItem.length) {
+    if (haveItem) {
       const data: number = await UserModel.destroy(find)
 
       if (data) {
@@ -116,9 +163,9 @@ export default class UserController {
  */
 async function checkName (username: string) {
   const find: FindOptions = {
-    where: { username }
+    where: { username },
+    attributes: ['id']
   }
-  const data: any[] = await UserModel.findAll(find)
-
-  return data.length
+  const data: UserModel = await UserModel.findOne(find)
+  return data
 }
