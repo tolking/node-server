@@ -31,6 +31,18 @@ export const sequelize: Sequelize = new Sequelize({
 })
 
 /**
+ * 配置 cors 跨域信息
+ * @param originList 允许的跨域列表(默认允许所有)
+ * @param allowMethods 允许的请求方式
+ * @param maxAge 最长有效时间(s)
+ */
+export const corsConfig: CorsConfig = {
+  originList: [],
+  allowMethods: ['GET', 'HEAD', 'PUT', 'POST', 'DELETE', 'PATCH'],
+  maxAge: 20 * 24 * 60 * 60
+}
+
+/**
  * 静态资源目录路径
  */
 export const staticPath = './static'

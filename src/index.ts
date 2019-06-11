@@ -1,10 +1,11 @@
 import * as koa from 'koa'
 import { Context } from 'koa'
+import * as cors from '@koa/cors'
 import * as bodyParser from 'koa-bodyparser'
 import * as serve from 'koa-static'
 import * as path from 'path'
 import router from './router'
-import { port, staticPath } from './config'
+import { port, corsConfig, staticPath } from './config'
 import { common, errorHandle } from './middlewares'
 
 const app = new koa()
@@ -12,12 +13,23 @@ const app = new koa()
 app
   // 请求信息
   .use(async (ctx: Context, next: Function) => {
-    ctx.set('Access-Control-Allow-Origin', '*')
-    ctx.set('Access-Control-Allow-Headers', 'X-Requested-With')
-    ctx.set('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS')
     console.log(`Process ${ctx.request.method} ${ctx.request.url}...`)
     await next()
   })
+
+  // 处理浏览器跨域(默认允许所有，如果不需要注销代码)
+  .use(cors({
+    origin: (ctx) => {
+      const origin = ctx.request.header.origin
+      return (
+        corsConfig.originList.length && !corsConfig.originList.includes(origin)
+          ? corsConfig.originList[0]
+          : origin
+      )
+    },
+    allowMethods: corsConfig.allowMethods,
+    maxAge: corsConfig.maxAge
+  }))
 
   // 配置静态资源目录
   .use(serve(

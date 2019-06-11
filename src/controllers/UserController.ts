@@ -16,7 +16,7 @@ import {
 export default class UserController {
   // 登陆
   public static async signIn (ctx: Context) {
-    const { username, password }: userInfo = ctx.request.body
+    const { username, password }: UserInfo = ctx.request.body
     const err = await checkValue({
       username,
       password
@@ -61,7 +61,7 @@ export default class UserController {
   }
   // 注册
   public static async signUp (ctx: Context) {
-    const { username, password }: userInfo = ctx.request.body
+    const { username, password }: UserInfo = ctx.request.body
     const err = await checkValue({
       username,
       password
@@ -91,7 +91,7 @@ export default class UserController {
   // 修改密码
   public static async change (ctx: Context) {
     const id: number = ctx.params.id
-    const { oldPassword, newPassword }: changePassword = ctx.request.body
+    const { oldPassword, newPassword }: ChangePassword = ctx.request.body
     const err = await checkValue({
       id,
       oldPassword,
