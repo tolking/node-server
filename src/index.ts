@@ -19,8 +19,8 @@ app
 
   // 处理浏览器跨域(默认允许所有，如果不需要注销代码)
   .use(cors({
-    origin: (ctx) => {
-      const origin = ctx.request.header.origin
+    origin: (ctx: Context) => {
+      const origin: string = ctx.request.header.origin
       return (
         corsConfig.originList.length && !corsConfig.originList.includes(origin)
           ? corsConfig.originList[0]
