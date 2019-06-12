@@ -1,4 +1,6 @@
 .DS_Store
+.gitignore
+.editorconfig
 node_modules
 /dist
 /test
@@ -9,6 +11,8 @@ node_modules
 
 # Log files
 npm-debug.log*
+package-lock.json
+yarn.lock
 yarn-debug.log*
 yarn-error.log*
 
