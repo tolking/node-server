@@ -104,7 +104,11 @@ export default class UserController {
     }
 
     const find: FindOptions = {
-      where: { id, password: md5(oldPassword) }
+      where: {
+        id,
+        username: ctx.token.username,
+        password: md5(oldPassword)
+      }
     }
     // 检查用户是否存在
     const haveItem: UserModel = await UserModel.findOne(find)
@@ -138,7 +142,10 @@ export default class UserController {
     }
 
     const find: FindOptions = {
-      where: { id }
+      where: {
+        id,
+        username: ctx.token.username
+      }
     }
     // 检查用户是否存在
     const haveItem: UserModel = await UserModel.findOne(find)

@@ -6,17 +6,11 @@ import * as serve from 'koa-static'
 import * as path from 'path'
 import router from './router'
 import { port, corsConfig, staticPath } from './config'
-import { common, errorHandle } from './middlewares'
+import { common, verifyToken, errorHandle } from './middlewares'
 
 const app = new koa()
 
 app
-  // 请求信息
-  .use(async (ctx: Context, next: Function) => {
-    console.log(`Process ${ctx.request.method} ${ctx.request.url}...`)
-    await next()
-  })
-
   // 处理浏览器跨域(默认允许所有，如果不需要注销代码)
   .use(cors({
     origin: (ctx: Context) => {
@@ -31,6 +25,12 @@ app
     maxAge: corsConfig.maxAge
   }))
 
+  // 打印请求信息
+  .use(async (ctx: Context, next: Function) => {
+    console.log(`Process ${ctx.request.method} ${ctx.request.url}...`)
+    await next()
+  })
+
   // 配置静态资源目录
   .use(serve(
     path.join( __dirname, staticPath)
@@ -38,6 +38,9 @@ app
 
   // 配置公共方法
   .use(common())
+
+  // 验证 token 状态
+  .use(verifyToken())
 
   // 拦截错误
   .use(errorHandle())
