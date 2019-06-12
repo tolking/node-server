@@ -7,7 +7,7 @@ export const port: number = 3000
 
 /**
  * 配置数据库
- * @param {string} dialect 数据库 One of mysql, postgres, sqlite, mariadb and mssql
+ * @param dialect 数据库 One of mysql, postgres, sqlite, mariadb and mssql
  * @param host 数据库地址
  * @param port 数据库端口
  * @param username 数据库账户
