@@ -3,7 +3,7 @@ import { Sequelize } from 'sequelize'
 /**
  * 启动端口
  */
-export const port: number = 3000
+export const port = 3000
 
 /**
  * 配置数据库
@@ -50,7 +50,7 @@ export const staticPath = './static'
 /**
  * token 别名
  */
-export const aliasToken: string = 'token'
+export const aliasToken = 'token'
 
 /**
  * 配置无需验证 token 的路由(数组或正则)
@@ -64,9 +64,9 @@ export const unless: string[] | RegExp = [
 /**
  * token 过期时间
  */
-export const exp: string = '10d'
+export const exp = '10d'
 
 /**
  * secretOrPrivateKey
  */
-export const secret: string = 'secret'
+export const secret = 'secret'

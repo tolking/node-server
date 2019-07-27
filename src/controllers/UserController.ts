@@ -11,11 +11,24 @@ import {
 } from 'sequelize'
 
 /**
+ * 检查用户名是否有存在
+ * @param username 用户名
+ */
+async function checkName (username: string): Promise<UserModel> {
+  const find: FindOptions = {
+    where: { username },
+    attributes: ['id']
+  }
+  const data: UserModel = await UserModel.findOne(find)
+  return data
+}
+
+/**
  * 处理用户相关数据
  */
 export default class UserController {
   // 登陆
-  public static async signIn (ctx: Context) {
+  public static async signIn (ctx: Context): Promise<void> {
     const { username, password }: UserInfo = ctx.request.body
     const err = await checkValue({
       username,
@@ -40,7 +53,7 @@ export default class UserController {
     }
   }
   // 检查是否有重复用户名
-  public static async check (ctx: Context) {
+  public static async check (ctx: Context): Promise<void> {
     const { username } = ctx.request.query
     const err = await checkValue({
       username
@@ -60,7 +73,7 @@ export default class UserController {
     }
   }
   // 注册
-  public static async signUp (ctx: Context) {
+  public static async signUp (ctx: Context): Promise<void> {
     const { username, password }: UserInfo = ctx.request.body
     const err = await checkValue({
       username,
@@ -89,7 +102,7 @@ export default class UserController {
     }
   }
   // 修改密码
-  public static async change (ctx: Context) {
+  public static async change (ctx: Context): Promise<void> {
     const id: number = ctx.params.id
     const { oldPassword, newPassword }: ChangePassword = ctx.request.body
     const err = await checkValue({
@@ -130,7 +143,7 @@ export default class UserController {
     }
   }
   // 注销用户
-  public static async del (ctx: Context) {
+  public static async del (ctx: Context): Promise<void> {
     const id: number = ctx.params.id
     const err = await checkValue({
       id
@@ -162,17 +175,4 @@ export default class UserController {
       ctx.send.warn('用户不存在或者已经删除')
     }
   }
-}
-
-/**
- * 检查用户名是否有存在
- * @param username 用户名
- */
-async function checkName (username: string) {
-  const find: FindOptions = {
-    where: { username },
-    attributes: ['id']
-  }
-  const data: UserModel = await UserModel.findOne(find)
-  return data
 }

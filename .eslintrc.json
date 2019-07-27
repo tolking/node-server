@@ -1,0 +1,21 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": false
+    },
+    "useJSXTextNode": false,
+    "project": "./tsconfig.json",
+    "tsconfigRootDir": "./",
+    "extraFileExtensions": [".vue"]
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "@typescript-eslint/indent": ["error", 2]
+  }
+}

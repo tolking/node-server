@@ -1,16 +1,16 @@
-import { Context } from 'koa'
+import { Context, Middleware } from 'koa'
 
 /**
  * 拦截错误
  */
-export default () => {
-  return async (ctx: Context, next: Function) => {
+export default (): Middleware => {
+  return async (ctx: Context, next: Function): Promise<void> => {
     try {
       await next()
     } catch (err) {
       console.log(err)
       const status: number = err.statusCode || err.status || 500
-      const msg: any = err.originalError ? err.originalError.message : err.message
+      const msg: string = err.originalError ? err.originalError.message : err.message
 
       ctx.send.status(status)
       ctx.send.error(msg)

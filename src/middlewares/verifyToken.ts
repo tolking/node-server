@@ -1,12 +1,26 @@
-import { Context } from 'koa'
+import { Context, Middleware } from 'koa'
 import * as jwt from 'jsonwebtoken'
 import { aliasToken, secret, unless } from '../config'
 
 /**
+ * 验证当前路由
+ * @param url 当前路由
+ * @param rule 排除规则
+ */
+async function verifyRoute (url: string, rule: string[] | RegExp): Promise<boolean> {
+  if (Array.isArray(rule as string[])) {
+    const route: string = url.split('?')[0]
+    return !(rule as string[]).includes(route)
+  } else {
+    return !(rule as RegExp).test(url)
+  }
+}
+
+/**
  * 验证 token 状态
  */
-export default () => {
-  return async (ctx: Context, next: Function) => {
+export default (): Middleware => {
+  return async (ctx: Context, next: Function): Promise<void> => {
     const verify: boolean = await verifyRoute(ctx.request.url, unless)
 
     if (verify) {
@@ -18,8 +32,9 @@ export default () => {
       if (accessToken) {
         try {
           const data: object | string = await jwt.verify(accessToken, secret)
-          if (typeof <object>data === 'object') {
-            ctx.token = <VerifyData>data
+          if (typeof (data as object) === 'object') {
+            // eslint-disable-next-line require-atomic-updates
+            ctx.token = data
           }
           await next()
         } catch (error) {
@@ -31,19 +46,5 @@ export default () => {
     } else {
       await next()
     }
-  }
-}
-
-/**
- * 验证当前路由
- * @param url 当前路由
- * @param rule 排除规则
- */
-async function verifyRoute (url: string, rule: string[] | RegExp) {
-  if (Array.isArray(<string[]>rule)) {
-    const route: string = url.split('?')[0]
-    return !(<string[]>rule).includes(route)
-  } else {
-    return !(<RegExp>rule).test(url)
   }
 }

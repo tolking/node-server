@@ -1,10 +1,12 @@
+import { Context } from 'koa'
+
 /**
  * 封装发送数据
  */
 export default class Send {
-  public ctx: any
+  public ctx: Context
 
-  constructor (ctx: any) {
+  public constructor (ctx: Context) {
     this.ctx = ctx
     this.ctx.set('Content-Type', 'application/json')
   }
@@ -13,14 +15,14 @@ export default class Send {
    * 配置返回的 status
    * @param code 状态码
    */
-  public status (code: number) {
+  public status (code: number): void {
     this.ctx.status = code
   }
   /**
    * 返回数据
    * @param config 数据内容
    */
-  public info (data: any) {
+  public info (data: object): void {
     this.ctx.body = JSON.stringify(data)
   }
 
@@ -29,7 +31,7 @@ export default class Send {
    * @param data 返回数据
    * @param msg 返回消息
    */
-  public success (data?: any, msg?: string) {
+  public success (data?: string | number | object | string[] | number[] | object[], msg?: string): void {
     this.info({ code: 0, msg, data })
   }
 
@@ -37,7 +39,7 @@ export default class Send {
    * 返回警告信息
    * @param msg 返回消息
    */
-  public warn (msg: any) {
+  public warn (msg: string): void {
     this.info({ code: 1, msg })
   }
 
@@ -45,7 +47,7 @@ export default class Send {
    * 返回错误数据
    * @param msg 返回消息
    */
-  public error (msg: any) {
+  public error (msg: string): void {
     this.info({ code: 2, msg })
   }
 }
